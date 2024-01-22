@@ -1,20 +1,15 @@
 import express from 'express';
 import cors from 'cors';
-import * as TodoController from '../controller/controller';
-import { executeQuery } from '../types/database';
+// @ts-ignore
+import * as TodoController from './controller/controller';
+// @ts-ignore
+import { addTodo } from './services/service';
 
 const app = express();
 const port = 6969;
 
 app.use(cors({ origin: '*' }));
 app.use(express.json());
-
-//Array
-//app.post('/todos', TodoController.postTodoHandler);
-//app.get('/todolist', TodoController.getTodoListHandler);
-//app.get('/todos/:id', TodoController.getTodoByIdHandler);
-//app.put('/todos/:id', TodoController.putTodoByIdHandler);
-//app.delete('/todos/:id', TodoController.deleteTodoByIdHandler);
 
 //Db
 //Get 
@@ -66,18 +61,11 @@ app.post('/todos', async (req, res) => {
     try {
 
         const todoData = req.body;
-
-        // Create the todo and get the todoId
-        const todoId = await TodoController.createTodo(todoData);
-
-        // Extract the listId from todoData
         const listId = todoData.list_id;
 
-        // Insert into the linkedIn table
-        const linkedInSql = 'INSERT INTO linkedIn (list_id, todo_id) VALUES (?, ?)';
-        const linkedInValues = [listId, todoId];
-        await executeQuery(linkedInSql, linkedInValues);
-
+        // Create the todo and get the todoId
+        const todoId = await addTodo(todoData.todo, listId);
+        
         // Respond with the created todo and status 201
         res.status(201).json({ id: todoId, ...todoData });
 
@@ -113,8 +101,9 @@ app.put('/todos/:id', async (req, res) => {
     try {
         const todoId = parseInt(req.params.id, 10);
         const updatedTodoData = req.body;
+        const listId = parseInt(req.body["list_id"]);
 
-        const updatedTodo = await TodoController.updateTodoById(todoId, updatedTodoData);
+        const updatedTodo = await TodoController.updateTodoInDatabase(todoId, updatedTodoData, listId);
 
         if (updatedTodo) {
             res.json(updatedTodo);
@@ -133,7 +122,7 @@ app.delete('/todos/:id', async (req, res) => {
     try {
         const todoId = parseInt(req.params.id, 10);
 
-        const deletedTodo = await TodoController.deleteTodoById(todoId);
+        const deletedTodo = await TodoController.deleteTodoFromDatabase(todoId);
 
         if (deletedTodo) {
             res.json(deletedTodo);
@@ -145,6 +134,24 @@ app.delete('/todos/:id', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
+//Delete a list from the database
+app.delete('/todolist/:id', async (req, res) => {
+    try{
+        const todolistId = parseInt(req.params.id, 10);
+
+        const deletedTodolist = await TodoController.deleteTodolistById(todolistId);
+
+        if (deletedTodolist) {
+            res.json(deletedTodolist);
+        } else {
+            res.status(404).send('Todo not found');
+        }
+    } catch(error){
+        console.error('Error deleting todo by ID:', error);
+        res.status(500).send('Internal Server Error');
+    }
+})
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);

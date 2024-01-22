@@ -1,22 +1,39 @@
 import { TodoItem, TodoUpdate } from '../types/types';
-import { TodoRepository } from '../repositories/repository';
+import { createNewTodo, createNewTodoList, deleteTodoById, getItemByList, getTodoById, getTodoLists, removeTodolist, updateTodoById } from '../repositories/repository';
 
-export function createTodo(todoData: TodoItem) {
-    return TodoRepository.add(todoData);
+//Get
+export async function getAllTodos() {
+    return await getTodoLists();
 }
 
-export function getAllTodos() {
-    return TodoRepository.getAll();
+export async function getSpecificTodoById(id: number) {
+    return await getTodoById(id);
 }
 
-export function getTodoById(id: number) {
-    return TodoRepository.getById(id);
+export async function getItemsInLinkedLists(id:number) {
+    return (await getItemByList(id)).rows;
 }
 
-export function updateTodo(id: number, updatedTodo: TodoUpdate) {
-    return TodoRepository.update(id, updatedTodo);
+//Post
+export function addTodo(todoData: TodoItem, list_id: number) {
+    return createNewTodo(todoData, list_id);
 }
 
-export function deleteTodo(id: number) {
-    return TodoRepository.delete(id);
+export async function addTodoList(name: string) {
+    return createNewTodoList(name);
+}
+
+//Delete
+export async function deleteTodo(id: number) {
+    return deleteTodoById(id);
+}
+
+export async function deleteTodolist(id: number){
+    return removeTodolist(id);
+}
+
+//Put
+export async function updateTodo(todoId: number, updatedTodo: TodoUpdate, listId: number) {
+    return updateTodoById(todoId, updatedTodo, listId)
+    
 }

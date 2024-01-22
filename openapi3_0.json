@@ -34,7 +34,7 @@
                     }
                 },
                 "tags": [
-                    "TODOs"
+                    "Todolist"
                 ]
             },
             "post": {
@@ -70,7 +70,47 @@
                     }
                 },
                 "tags": [
-                    "TODOs"
+                    "Todolist"
+                ]
+            }
+        },
+        "/todolist/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "The Id of the Todolist",
+                    "schema": {
+                        "type": "integer"
+                    }
+                }
+            ],
+            "delete": {
+                "summary": "Delete a Todolist by ID",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": 1,
+                                    "name": "Phad thai"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "TODOlist does not exist",
+                        "content": {
+                            "application/json": {
+                                "example": "Todolist not found"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Todolist"
                 ]
             }
         },
@@ -80,7 +120,7 @@
                     "name": "id",
                     "in": "path",
                     "required": true,
-                    "description": "The ID of the TODO item",
+                    "description": "The Id of the Todolist",
                     "schema": {
                         "type": "integer"
                     }
@@ -116,7 +156,7 @@
                     }
                 },
                 "tags": [
-                    "TODOs"
+                    "Linkedin"
                 ]
             }
         },
@@ -247,18 +287,32 @@
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "todo": {
-                                        "type": "string",
-                                        "description": "The TODO text"
-                                    },
-                                    "time": {
+                                    "list_id": {
                                         "type": "integer",
-                                        "description": "Estimated time in minutes"
+                                        "description": "The ID of the list to associate with the TODO"
+                                    },
+                                    "todo": {
+                                        "type": "object",
+                                        "properties": {
+                                            "todo": {
+                                                "type": "string",
+                                                "description": "The TODO text"
+                                            },
+                                            "time": {
+                                                "type": "integer",
+                                                "description": "Estimated time in minutes"
+                                            }
+                                        },
+                                        "required": ["todo"]
                                     }
                                 },
+                                "required": ["list_id", "todo"],
                                 "example": {
-                                    "todo": "Updated Task",
-                                    "time": 45
+                                    "list_id": 1,
+                                    "todo": {
+                                        "todo": "Updated Task",
+                                        "time": 45
+                                    }
                                 }
                             }
                         }
@@ -271,8 +325,11 @@
                             "application/json": {
                                 "example": {
                                     "id": 1,
-                                    "todo": "Updated Task",
-                                    "time": 45
+                                    "list_id": 1,
+                                    "todo": {
+                                        "todo": "Updated Task",
+                                        "time": 45
+                                    }
                                 }
                             }
                         }
@@ -290,193 +347,7 @@
                     "TODOs"
                 ]
             }
-        },
-        "/zzzTODOList": {
-            "get": {
-                "summary": "Get all TODOs",
-                "responses": {
-                    "200": {
-                        "description": "Successful response",
-                        "content": {
-                            "application/json": {
-                                "example": [
-                                    {
-                                        "id": 1,
-                                        "todo": "Buy groceries",
-                                        "time": 30
-                                    },
-                                    {
-                                        "id": 2,
-                                        "todo": "Finish coding",
-                                        "time": 60
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "ZZZ"
-                ]
-            }
-        },
-        "/zzzTODO": {
-            "post": {
-                "summary": "Create a new TODO",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "todo": {
-                                        "type": "string",
-                                        "description": "The TODO text"
-                                    },
-                                    "time": {
-                                        "type": "integer",
-                                        "description": "Estimated time in minutes"
-                                    }
-                                },
-                                "required": [
-                                    "todo"
-                                ]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Successful creation",
-                        "content": {
-                            "application/json": {
-                                "example": {
-                                    "id": 3,
-                                    "todo": "Read a book",
-                                    "time": 45
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "ZZZ"
-                ]
-            }
-        },
-        "/zzzTODOList/{id}": {
-            "parameters": [
-                {
-                    "name": "id",
-                    "in": "path",
-                    "required": true,
-                    "description": "The ID of the TODO item",
-                    "schema": {
-                        "type": "integer"
-                    }
-                }
-            ],
-            "get": {
-                "summary": "Get a TODO by ID",
-                "responses": {
-                    "200": {
-                        "description": "Successful response",
-                        "content": {
-                            "application/json": {
-                                "example": {
-                                    "id": 1,
-                                    "todo": "Buy groceries",
-                                    "time": 30
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "ZZZ"
-                ]
-            },
-            "delete": {
-                "summary": "Delete a TODO by ID",
-                "responses": {
-                    "200": {
-                        "description": "Successful response",
-                        "content": {
-                            "application/json": {
-                                "example": {
-                                    "id": 1,
-                                    "todo": "aquaman",
-                                    "time": 10
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "TODO does not exist",
-                        "content": {
-                            "application/json": {
-                                "example": "Todo not found"
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "ZZZ"
-                ]
-            },
-            "put": {
-                "summary": "UPDATE todo by ID",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "todo": {
-                                        "type": "string",
-                                        "description": "The TODO text"
-                                    },
-                                    "time": {
-                                        "type": "integer",
-                                        "description": "Estimated time in minutes"
-                                    }
-                                },
-                                "example": {
-                                    "todo": "Updated Task",
-                                    "time": 45
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful response",
-                        "content": {
-                            "application/json": {
-                                "example": {
-                                    "id": 1,
-                                    "todo": "Updated Task",
-                                    "time": 45
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "TODO does not exist",
-                        "content": {
-                            "application/json": {
-                                "example": "Todo not found"
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "ZZZ"
-                ]
-            }
+            
         }
     },
     "tags": [
@@ -485,8 +356,12 @@
             "description": "Operations related to TODOs"
         },
         {
-            "name": "ZZZ",
-            "description": "Operations related to zzz"
+            "name": "Todolist",
+            "description": "Operations related to Todolist"
+        },
+        {
+            "name": "Linkedin",
+            "description": "Operations related to Linkedin"
         }
     ]
 }

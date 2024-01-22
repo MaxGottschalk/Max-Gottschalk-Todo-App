@@ -1,24 +1,18 @@
-import * as mysql from 'mysql2/promise';
-
-const dbConfig: mysql.PoolOptions = {
+import { Client } from 'pg'
+export const client = new Client({
     host: 'localhost',
-    port: 3308,
-    user: 'root',
-    password: "",
-    database: 'todoDb',
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0,
-};
+    port: 5433,
+    user: 'postgres',
+    password: "postgres",
+    database: 'postgres'
+});
 
-const pool = mysql.createPool(dbConfig);
+async function connectToDb() {
+    await client.connect();
 
-export async function executeQuery(sql: string, values?: any[]): Promise<any> {
-    const connection = await pool.getConnection();
-    try {
-        const [results] = await connection.query(sql, values);
-        return results;
-    } finally {
-        connection.release();
-    }
+    const result = await client.query("SELECT NOW();");
+    console.log(result);
+    console.log("It is working");
 }
+
+connectToDb()
