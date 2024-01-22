@@ -65,7 +65,6 @@ app.post('/todos', async (req, res) => {
 
         // Create the todo and get the todoId
         const todoId = await addTodo(todoData.todo, listId);
-        
         // Respond with the created todo and status 201
         res.status(201).json({ id: todoId, ...todoData });
 

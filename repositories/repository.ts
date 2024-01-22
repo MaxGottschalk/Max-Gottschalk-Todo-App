@@ -2,17 +2,21 @@ import { client } from '../types/database';
 import { TodoItem, TodoUpdate } from '../types/types';
 
 
-//Get
+// Get operations
+
+// Fetch all todo lists from the database
 export async function getTodoLists(){
     return (await client.query('SELECT * FROM todo_lists;')).rows;
 }
 
+// Fetch a specific todo by its ID
 export async function getTodoById(id: number){
     const sql = `SELECT * FROM todo WHERE id = $1`;
     const values = [id];
     return await client.query(sql, values);
 }
 
+// Fetch items linked to a specific todo list by list ID
 export async function getItemByList(listId: number) {
     
     const sql = `SELECT * from todo where id in(
@@ -21,7 +25,9 @@ export async function getItemByList(listId: number) {
     return await client.query(sql, values);
 }
 
-//Post
+// Post operations
+
+// Add a new todo to the database and link it to a specific list
 export async function createNewTodo(todoItem : TodoItem, list_id : number){
     const sql = `INSERT INTO todo (todo, time) VALUES ($1, $2) RETURNING id`;
     const values = [todoItem.todo, todoItem.time];
@@ -34,6 +40,7 @@ export async function createNewTodo(todoItem : TodoItem, list_id : number){
     return res.rows[0].id;
 }
 
+// Add a new todo list to the database
 export async function createNewTodoList(name:string) {
     // Execute the SQL query to insert a new todo list
     const sql = `INSERT INTO todo_lists (name) VALUES ($1) RETURNING id`;
@@ -43,7 +50,9 @@ export async function createNewTodoList(name:string) {
     return res.rows[0].id;
 }
 
-//Delete
+// Delete operations
+
+// Delete a todo by its ID
 export async function deleteTodoById(id: number) {
     const existingTodo = await getTodoById(id);
 
@@ -56,6 +65,7 @@ export async function deleteTodoById(id: number) {
     return (await client.query(sql, values)).rows;
 }
 
+// Remove a todo list by its ID
 export async function removeTodolist(id: number) {
     const existingTodolist = `SELECT * FROM todo_lists WHERE id = $1`
     const values = [id];
@@ -70,7 +80,9 @@ export async function removeTodolist(id: number) {
     
 }
 
-//Put
+// Put operation
+
+// Update a todo by its ID with new data, optionally updating the linked list ID
 export async function updateTodoById(id: number, updatedTodo: TodoUpdate, listId: number){
 
     try {
