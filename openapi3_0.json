@@ -211,6 +211,14 @@
                                 }
                             }
                         }
+                    },
+                    "404": {
+                        "description": "List not found",
+                        "content": {
+                            "application/json": {
+                                "example": "List with id 404 does not exist"
+                            }
+                        }
                     }
                 },
                 "tags": [

@@ -1,6 +1,7 @@
 import { Client } from 'pg'
 import * as dotenv from 'dotenv';
 import * as path from 'path';
+import { createTables } from '../repositories/repository';
 
 const envPath = path.resolve(__dirname, '..', '.env');
 dotenv.config({ path: envPath });
@@ -32,4 +33,11 @@ async function connectToDb() {
 }
 
 // Invoke the connectToDb function to establish the database connection
-connectToDb()
+connectToDb().then(() => {
+    // Ensure the database tables exist
+    createTables();
+
+}).catch(error => {
+    console.error('Error connecting to the database:', error);
+    // Handle the error appropriately
+});

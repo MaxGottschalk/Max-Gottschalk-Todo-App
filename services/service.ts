@@ -22,7 +22,7 @@ export async function getItemsInLinkedLists(id:number) {
 
 // Add a new todo to the database
 export function addTodo(todoData: TodoItem, list_id: number) {
-    return createNewTodo(todoData, list_id);
+        return createNewTodo(todoData, list_id);
 }
 
 // Add a new todo list to the database

@@ -58,10 +58,9 @@ app.get('/linkedin/:id', async (req, res) => {
 
 //Post (Create new todo)
 app.post('/todos', async (req, res) => {
+    const todoData = req.body;
+    const listId = todoData.list_id;
     try {
-
-        const todoData = req.body;
-        const listId = todoData.list_id;
 
         // Create the todo and get the todoId
         const todoId = await addTodo(todoData.todo, listId);
@@ -70,7 +69,7 @@ app.post('/todos', async (req, res) => {
 
     } catch (error) {
         console.error('Error creating todo:', error);
-        res.status(500).send('Internal Server Error');
+        res.status(404).send(`List with id ${listId} does not exist`);
     }
 });
 
@@ -104,14 +103,10 @@ app.put('/todos/:id', async (req, res) => {
 
         const updatedTodo = await TodoController.updateTodoInDatabase(todoId, updatedTodoData, listId);
 
-        if (updatedTodo) {
-            res.json(updatedTodo);
-        } else {
-            res.status(404).send('Todo not found');
-        }
+        res.json(updatedTodo);
     } catch (error) {
         console.error('Error updating todo by ID:', error);
-        res.status(500).send('Internal Server Error');
+        res.status(404).send('Todo not found');
     }
 });
 

@@ -32,7 +32,7 @@ export async function getLinkedItemsById(listId: number): Promise<any[]> {
 
 // Create a new todo item and link it to a todo list
 export async function createTodo(todoItem: TodoItem, list_Id: number): Promise<number> {
-    const result = await service.addTodo(todoItem, list_Id);
+        const result = await service.addTodo(todoItem, list_Id);
     return result;
 }
 
