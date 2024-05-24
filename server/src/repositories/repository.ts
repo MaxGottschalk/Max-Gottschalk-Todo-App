@@ -79,6 +79,11 @@ export async function getTodoLists(){
     return (await client.query('SELECT * FROM todo_lists;')).rows;
 }
 
+// Fetch all todos from the database
+export async function getTodos(){
+    return (await client.query('SELECT * FROM todo;')).rows;
+}
+
 // Fetch a specific todo by its ID
 export async function getTodoById(id: number){
     const sql = `SELECT * FROM todo WHERE id = $1`;
@@ -144,30 +149,61 @@ export async function createNewTodoList(name:string) {
 
 // Delete a todo by its ID
 export async function deleteTodoById(id: number) {
-    const existingTodo = await getTodoById(id);
-
-    if (!existingTodo) {
+    try {
+      // Check if the todo exists
+      const existingTodo = await getTodoById(id);
+  
+      if (!existingTodo) {
         return null; // Todo not found
+      }
+  
+      // Start a transaction
+      await client.query('BEGIN');
+  
+      // Delete the associated records in the linkedin table
+      const deleteLinkedinQuery = `DELETE FROM linkedin WHERE todo_id = $1`;
+      await client.query(deleteLinkedinQuery, [id]);
+  
+      // Delete the todo item
+      const deleteTodoQuery = `DELETE FROM todo WHERE id = $1 RETURNING *`;
+      const result = await client.query(deleteTodoQuery, [id]);
+  
+      // Commit the transaction
+      await client.query('COMMIT');
+  
+      return result.rows;
+    } catch (error) {
+      // Rollback the transaction in case of an error
+      await client.query('ROLLBACK');
+      console.error('Error deleting todo by ID:', error);
+      throw error;
     }
-
-    const sql = `DELETE FROM todo WHERE id = $1 RETURNING *`;
-    const values = [id];
-    return (await client.query(sql, values)).rows;
-}
+  }
 
 // Remove a todo list by its ID
 export async function removeTodolist(id: number) {
-    const existingTodolist = `SELECT * FROM todo_lists WHERE id = $1`
-    const values = [id];
-    const res = await client.query(existingTodolist, values);
+    try {
 
-    if (!res) {
-        return null; // Todo not found
-    }
-
-    const sql = `DELETE FROM todo_lists WHERE id = $1 RETURNING *`;
-    return (await client.query(sql, values)).rows;
+        // Delete the associated records in the linkedin table and get the todo_id
+        const deleteLinkedinQuery = `DELETE FROM linkedin WHERE list_id = $1 RETURNING todo_id`;
+        const linkedinDelRes = await client.query(deleteLinkedinQuery, [id]);
+        
+        const todoIds = linkedinDelRes.rows.map(row => row.todo_id);
     
+        // Delete todos linked with the todo list from todo table
+        const todoQuery = `DELETE FROM todo WHERE id = ANY($1) RETURNING *`;
+        const todoValues = [todoIds];
+        const todoRes = await client.query(todoQuery, todoValues);
+
+        // Delete todo list from todo_lists table
+        const todolistQuery = `DELETE FROM todo_lists WHERE id = $1 RETURNING *`;
+        const todolistRes = await client.query(todolistQuery, [id]);
+
+        return { todoDeleted: todoRes.rows, todolistDeleted: todolistRes.rows, linkedinDeleted: linkedinDelRes.rows };
+    } catch (error) {
+        console.error('Error removing todo list:', error);
+        throw error;
+    }
 }
 
 // Put operation

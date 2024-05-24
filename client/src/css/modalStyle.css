@@ -1,0 +1,32 @@
+
+.custom-overlay {
+    background-color: rgba(0, 0, 0, 0.75);
+}
+  
+.custom-modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    width: 300px; /* Adjust the width as needed */
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    outline: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+  
+.custom-modal h2 {
+    margin-top: 0;
+}
+  
+.custom-modal form div {
+    margin-bottom: 10px;
+}
+  
+.custom-modal form button {
+    margin-right: 10px;
+}

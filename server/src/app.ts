@@ -24,6 +24,17 @@ app.get('/todolist', async (req, res) => {
     }
 });
 
+//Get a list of all collections
+app.get('/todo', async (req, res) => {
+    try {
+        const todos = await TodoController.fetchAllTodos();
+        res.json(todos);
+    } catch (error) {
+        console.error('Error fetching todos:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 //Get todo by id
 app.get('/todos/:id', async (req, res) => {
     try {

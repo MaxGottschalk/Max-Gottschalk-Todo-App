@@ -1,11 +1,16 @@
 import { TodoItem, TodoUpdate } from '../types/types';
-import { createNewTodo, createNewTodoList, deleteTodoById, getItemByList, getTodoById, getTodoLists, removeTodolist, updateTodoById } from '../repositories/repository';
+import { createNewTodo, createNewTodoList, deleteTodoById, getItemByList, getTodoById, getTodoLists, getTodos, removeTodolist, updateTodoById } from '../repositories/repository';
 
 // Get operations
 
 // Fetch all todo lists from the database
 export async function getAllTodosLists() {
     return await getTodoLists();
+}
+
+// Fetch all todos from the database
+export async function getAllTodos() {
+    return await getTodos();
 }
 
 // Fetch a specific todo by its ID

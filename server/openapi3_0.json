@@ -160,6 +160,35 @@
                 ]
             }
         },
+        "/todo":{
+            "get": {
+                "summary": "Get all TODOs",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "example": [
+                                    {
+                                        "id": 1,
+                                        "todo": "Buy groceries",
+                                        "time": 30
+                                    },
+                                    {
+                                        "id": 1,
+                                        "todo": "Buy groceries",
+                                        "time": 30   
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "TODOs"
+                ]
+            }
+        },
         "/todos": {
             "post": {
                 "summary": "Create a new TODO",

@@ -1,0 +1,23 @@
+.navbar {
+    background-color: #31363F;
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    box-shadow: 5px 0px 10px rgba(0, 0, 0, 1);
+}
+
+button{
+    border-radius: 20%;
+    background-color: #EEEEEE;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100px;
+}
+
+button:hover{
+    background-color: #222831;
+    color: #EEEEEE;
+}

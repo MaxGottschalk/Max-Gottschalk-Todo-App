@@ -11,6 +11,13 @@ export async function fetchTodoList(): Promise<any> {
     return results;
 }
 
+// Fetch all todos
+export async function fetchAllTodos(): Promise<any> {
+    console.log("Pinged!");
+    const results = await service.getAllTodos();
+    return results;
+}
+
 // Fetch a specific todo item by its ID
 export async function getTodoById(todoId: number): Promise<any> {
     const results = await getSpecificTodoById(todoId);
