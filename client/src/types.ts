@@ -1,12 +1,8 @@
-// export interface Todo {
-//     todo: string;
-//     time: number;
-// }
-
 export interface Todo {
     todo: string;
     time: number;
     id?: number;
+    isDone: boolean;
 }
 
 export interface Todos {
@@ -19,12 +15,16 @@ export interface TodoList {
     name: string
 }
 
-export interface UpdateTodoProps{
+export interface UpdateTodoProps {
     id: number;
     onUpdateSuccess: () => void;
 }
 
-export interface deleteTodoProp{
+export interface deleteTodoProp {
     id: number;
     onDelete: (id: number) => void;
+}
+
+export interface TodosInListProps {
+    id: number;
 }

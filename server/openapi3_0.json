@@ -160,7 +160,7 @@
                 ]
             }
         },
-        "/todo":{
+        "/todo": {
             "get": {
                 "summary": "Get all TODOs",
                 "responses": {
@@ -172,12 +172,14 @@
                                     {
                                         "id": 1,
                                         "todo": "Buy groceries",
-                                        "time": 30
+                                        "time": 30,
+                                        "isDone": false
                                     },
                                     {
                                         "id": 1,
                                         "todo": "Buy groceries",
-                                        "time": 30   
+                                        "time": 30,
+                                        "isDone": false
                                     }
                                 ]
                             }
@@ -213,6 +215,10 @@
                                             "time": {
                                                 "type": "integer",
                                                 "description": "Estimated time in minutes"
+                                            },
+                                            "isDone": {
+                                                "type": "boolean",
+                                                "description": "If the task is done"
                                             }
                                         },
                                         "description": "The TODO details"
@@ -338,12 +344,21 @@
                                             "time": {
                                                 "type": "integer",
                                                 "description": "Estimated time in minutes"
+                                            },
+                                            "isDone": {
+                                                "type": "boolean",
+                                                "description": "Is the task done?"
                                             }
                                         },
-                                        "required": ["todo"]
+                                        "required": [
+                                            "todo"
+                                        ]
                                     }
                                 },
-                                "required": ["list_id", "todo"],
+                                "required": [
+                                    "list_id",
+                                    "todo"
+                                ],
                                 "example": {
                                     "list_id": 1,
                                     "todo": {
@@ -384,7 +399,66 @@
                     "TODOs"
                 ]
             }
-            
+        },
+        "/todoStatus/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "The ID of the TODO item",
+                    "schema": {
+                        "type": "integer"
+                    }
+                }
+            ],
+            "put": {
+                "summary": "Update status",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "isDone": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "required": [
+                                    "isDone"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful creation",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "listid": 8,
+                                    "todo": {
+                                        "isDone": "true"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "List not found",
+                        "content": {
+                            "application/json": {
+                                "example": "List with id 404 does not exist"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "TODOs"
+                ]
+            }
         }
     },
     "tags": [

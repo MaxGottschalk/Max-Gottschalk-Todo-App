@@ -17,3 +17,12 @@
     align-content: center;
     justify-content: space-evenly;
 }
+
+.menu-list {
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid #76ABAE;
+    box-shadow: 5px 0px 5px #31363F;
+    width: 900px;
+    margin: 10px;
+}

@@ -4,7 +4,7 @@
     grid-template-columns: 50% 50%;
     gap: 20px;
 }
-  
+
 .card {
     width: 300px;
     border-radius: 8px;
@@ -12,11 +12,11 @@
     box-shadow: 5px 0px 10px rgba(0, 0, 0, 0.4);
 }
 
-.card-list-content:hover{
+.card-list-content:hover {
     height: 300px;
     background-color: #76ABAE;
 }
-  
+
 .card-header {
     display: flex;
     align-items: center;
@@ -26,7 +26,7 @@
     color: #fff;
     padding: 10px;
 }
-  
+
 .card-content {
     display: flex;
     align-items: center;
@@ -48,31 +48,21 @@
     padding: 10px;
 }
 
-.completed-todos{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    background-color: #333;
-    color: #fff;
-    height: 30px;
-}
-
-.trash-icon{
+.trash-icon {
     width: 20px;
     position: absolute;
     right: 10px;
     cursor: pointer;
 }
 
-.update-icon{
+.update-icon {
     width: 20px;
     position: absolute;
     left: 10px;
     cursor: pointer;
 }
 
-input{
+input {
     padding: 5px;
     margin: 5px;
     box-sizing: border-box;
@@ -87,13 +77,13 @@ input[type="checkbox"] {
     cursor: pointer;
 }
 
-.crossed-out{
+.crossed-out {
     text-decoration: line-through;
     color: gray;
 }
 
 ul {
-    padding-left: 0; 
+    padding-left: 0;
 }
 
 li {

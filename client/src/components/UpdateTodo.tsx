@@ -7,7 +7,7 @@ import { Todos, UpdateTodoProps } from '../types';
 
 
 const UpdateTodo: React.FC<UpdateTodoProps> = ({ id, onUpdateSuccess }) => {
-  
+
   const [todo, setTodo] = useState('');
   const [time, setTime] = useState(0);
   const [listId, setListId] = useState(0);
@@ -19,11 +19,12 @@ const UpdateTodo: React.FC<UpdateTodoProps> = ({ id, onUpdateSuccess }) => {
       const updateTodo: Todos = {
         list_id: listId,
         todo: {
-            todo: todo,
-            time: time,
-            id: id,
+          todo: todo,
+          time: time,
+          id: id,
+          isDone: false,
         },
-    };
+      };
 
       const response = await fetch(`http://localhost:6969/todos/${id}`, {
         method: 'PUT',
@@ -35,7 +36,7 @@ const UpdateTodo: React.FC<UpdateTodoProps> = ({ id, onUpdateSuccess }) => {
 
       if (response.ok) {
         alert('Todo Updated!');
-        setIsModalOpen(false); // Close modal on success
+        setIsModalOpen(false);
         onUpdateSuccess();
       } else {
         // Handle error
@@ -47,10 +48,10 @@ const UpdateTodo: React.FC<UpdateTodoProps> = ({ id, onUpdateSuccess }) => {
     }
   };
 
-  
+
   return (
     <div className='update-icon'>
-      <CIcon onClick={() => setIsModalOpen(true)} icon={cilPencil} size='sm'/>
+      <CIcon onClick={() => setIsModalOpen(true)} icon={cilPencil} size='sm' />
       <Modal
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}

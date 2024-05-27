@@ -1,5 +1,5 @@
 import { TodoItem, TodoUpdate } from '../types/types';
-import { createNewTodo, createNewTodoList, deleteTodoById, getItemByList, getTodoById, getTodoLists, getTodos, removeTodolist, updateTodoById } from '../repositories/repository';
+import { createNewTodo, createNewTodoList, deleteTodoById, getItemByList, getTodoById, getTodoLists, getTodos, removeTodolist, updateTodoById, updateTodoIsDoneId } from '../repositories/repository';
 
 // Get operations
 
@@ -19,7 +19,7 @@ export async function getSpecificTodoById(id: number) {
 }
 
 // Fetch items linked to a specific todo list by list ID
-export async function getItemsInLinkedLists(id:number) {
+export async function getItemsInLinkedLists(id: number) {
     return (await getItemByList(id)).rows;
 }
 
@@ -27,7 +27,7 @@ export async function getItemsInLinkedLists(id:number) {
 
 // Add a new todo to the database
 export function addTodo(todoData: TodoItem, list_id: number) {
-        return createNewTodo(todoData, list_id);
+    return createNewTodo(todoData, list_id);
 }
 
 // Add a new todo list to the database
@@ -43,7 +43,7 @@ export async function deleteTodo(id: number) {
 }
 
 // Remove a todo list by its ID
-export async function deleteTodolist(id: number){
+export async function deleteTodolist(id: number) {
     return removeTodolist(id);
 }
 
@@ -52,5 +52,8 @@ export async function deleteTodolist(id: number){
 // Update a todo by its ID
 export async function updateTodo(todoId: number, updatedTodo: TodoUpdate, listId: number) {
     return updateTodoById(todoId, updatedTodo, listId)
-    
+}
+
+export async function updateTodoStatus(todoId: number, isDone: boolean) {
+    return updateTodoIsDoneId(todoId, isDone)
 }

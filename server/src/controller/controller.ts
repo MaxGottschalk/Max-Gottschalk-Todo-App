@@ -39,7 +39,7 @@ export async function getLinkedItemsById(listId: number): Promise<any[]> {
 
 // Create a new todo item and link it to a todo list
 export async function createTodo(todoItem: TodoItem, list_Id: number): Promise<number> {
-        const result = await service.addTodo(todoItem, list_Id);
+    const result = await service.addTodo(todoItem, list_Id);
     return result;
 }
 
@@ -63,6 +63,12 @@ export async function createTodoList({ name }: { name: string }): Promise<number
 export async function updateTodoInDatabase(todoId: number, updatedTodo: TodoUpdate, listId: number): Promise<any> {
     await service.updateTodo(todoId, updatedTodo, listId);
     return { id: todoId, ...updatedTodo };
+}
+
+//Update status of todo
+export async function updateTodoStatusDone(todoId: number, isDone: boolean) {
+    const res = await service.updateTodoStatus(todoId, isDone);
+    return res;
 }
 
 //Delete

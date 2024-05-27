@@ -120,6 +120,20 @@ app.put('/todos/:id', async (req, res) => {
         res.status(404).send('Todo not found');
     }
 });
+// Update Status
+app.put('/todoStatus/:id', async (req, res) => {
+    try {
+        const todoId = parseInt(req.params.id, 10);
+        const { isDone } = req.body;
+
+        const updatedTodo = await TodoController.updateTodoStatusDone(todoId, isDone);
+
+        res.json(updatedTodo);
+    } catch (error) {
+        console.error('Error updating todo by ID:', error);
+        res.status(404).send('Todo not found');
+    }
+});
 
 //Delete
 //Delete specific todo by id
@@ -142,7 +156,7 @@ app.delete('/todos/:id', async (req, res) => {
 
 //Delete a list from the database
 app.delete('/todolist/:id', async (req, res) => {
-    try{
+    try {
         const todolistId = parseInt(req.params.id, 10);
 
         const deletedTodolist = await TodoController.deleteTodolistById(todolistId);
@@ -152,7 +166,7 @@ app.delete('/todolist/:id', async (req, res) => {
         } else {
             res.status(404).send('Todo not found');
         }
-    } catch(error){
+    } catch (error) {
         console.error('Error deleting todo by ID:', error);
         res.status(500).send('Internal Server Error');
     }

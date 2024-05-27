@@ -1,0 +1,62 @@
+.todolist-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.todolist {
+    width: 750px;
+    border: 2px solid #76ABAE;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+.todolist-header {
+    display: flex;
+    align-items: center;
+    background-color: #e0e0e0;
+    padding: 0px;
+    border-radius: 8px;
+    border: 2px solid #31363F;
+    margin-bottom: 10px;
+    position: relative;
+    justify-content: center;
+}
+
+.todolist-content {
+    display: none;
+}
+
+.todolist:hover .todolist-content {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 10px;
+    border: 2px solid #76ABAE;
+}
+
+.completed-todos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background-color: #76ABAE;
+    color: #fff;
+    height: 20px;
+    border: 2px solid #31363F;
+    margin: 5px;
+}
+
+.todolist-header p {
+    position: absolute;
+    left: 10px;
+    cursor: pointer;
+    color: #31363F;
+}
+
+.delete-icon {
+    width: 20px;
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+}

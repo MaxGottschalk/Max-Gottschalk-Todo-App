@@ -1,24 +1,20 @@
 import "../css/menu.css";
 import TodoLists from './TodoLists';
-import Todos from './Todos';
-
 
 const HomePage: React.FC = () => {
-    return(
+    return (
         <div>
             <h1 className='menu'>Home</h1>
             <div className="menu-content">
                 <div>
-                    <h1>Todos</h1>
-                    <Todos/>
-                </div>
-                <div>
-                    <h1>Todo-list</h1>
-                    <TodoLists/>
+                    <h2>Todo-list</h2>
+                    <div className="menu-list">
+                        <TodoLists />
+                    </div>
                 </div>
             </div>
         </div>
-    ) 
+    )
 };
 
 export default HomePage;

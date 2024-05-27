@@ -35,7 +35,8 @@ async function createTable(tableName: string) {
                     CREATE TABLE todo (
                         id SERIAL PRIMARY KEY,
                         todo TEXT,
-                        time INTEGER
+                        time INTEGER,
+                        isDone BOOLEAN
                     );
                 `);
                 break;
@@ -75,17 +76,17 @@ async function createTable(tableName: string) {
 // Get operations
 
 // Fetch all todo lists from the database
-export async function getTodoLists(){
+export async function getTodoLists() {
     return (await client.query('SELECT * FROM todo_lists;')).rows;
 }
 
 // Fetch all todos from the database
-export async function getTodos(){
+export async function getTodos() {
     return (await client.query('SELECT * FROM todo;')).rows;
 }
 
 // Fetch a specific todo by its ID
-export async function getTodoById(id: number){
+export async function getTodoById(id: number) {
     const sql = `SELECT * FROM todo WHERE id = $1`;
     const values = [id];
     return await client.query(sql, values);
@@ -93,7 +94,7 @@ export async function getTodoById(id: number){
 
 // Fetch items linked to a specific todo list by list ID
 export async function getItemByList(listId: number) {
-    
+
     const sql = `SELECT * from todo where id in(
         SELECT todo_id from linkedin where list_id = $1)`;
     const values = [listId];
@@ -109,8 +110,8 @@ export async function createNewTodo(todoItem: TodoItem, list_id: number): Promis
         await client.query('BEGIN');
 
         // Insert into 'todo' table
-        const todoSql = 'INSERT INTO todo (todo, time) VALUES ($1, $2) RETURNING id';
-        const todoValues = [todoItem.todo, todoItem.time];
+        const todoSql = 'INSERT INTO todo (todo, time, isDone) VALUES ($1, $2, $3 ) RETURNING id';
+        const todoValues = [todoItem.todo, todoItem.time, todoItem.isDone];
         const todoResult = await client.query(todoSql, todoValues);
 
         const todoId = todoResult.rows[0].id;
@@ -131,12 +132,12 @@ export async function createNewTodo(todoItem: TodoItem, list_id: number): Promis
 
         console.error('Error creating todo:', error);
         // If an error occurs, log the error and return a custom error response
-        throw(error);
+        throw (error);
     }
 }
 
 // Add a new todo list to the database
-export async function createNewTodoList(name:string) {
+export async function createNewTodoList(name: string) {
     // Execute the SQL query to insert a new todo list
     const sql = `INSERT INTO todo_lists (name) VALUES ($1) RETURNING id`;
     const values = [name];
@@ -150,35 +151,35 @@ export async function createNewTodoList(name:string) {
 // Delete a todo by its ID
 export async function deleteTodoById(id: number) {
     try {
-      // Check if the todo exists
-      const existingTodo = await getTodoById(id);
-  
-      if (!existingTodo) {
-        return null; // Todo not found
-      }
-  
-      // Start a transaction
-      await client.query('BEGIN');
-  
-      // Delete the associated records in the linkedin table
-      const deleteLinkedinQuery = `DELETE FROM linkedin WHERE todo_id = $1`;
-      await client.query(deleteLinkedinQuery, [id]);
-  
-      // Delete the todo item
-      const deleteTodoQuery = `DELETE FROM todo WHERE id = $1 RETURNING *`;
-      const result = await client.query(deleteTodoQuery, [id]);
-  
-      // Commit the transaction
-      await client.query('COMMIT');
-  
-      return result.rows;
+        // Check if the todo exists
+        const existingTodo = await getTodoById(id);
+
+        if (!existingTodo) {
+            return null; // Todo not found
+        }
+
+        // Start a transaction
+        await client.query('BEGIN');
+
+        // Delete the associated records in the linkedin table
+        const deleteLinkedinQuery = `DELETE FROM linkedin WHERE todo_id = $1`;
+        await client.query(deleteLinkedinQuery, [id]);
+
+        // Delete the todo item
+        const deleteTodoQuery = `DELETE FROM todo WHERE id = $1 RETURNING *`;
+        const result = await client.query(deleteTodoQuery, [id]);
+
+        // Commit the transaction
+        await client.query('COMMIT');
+
+        return result.rows;
     } catch (error) {
-      // Rollback the transaction in case of an error
-      await client.query('ROLLBACK');
-      console.error('Error deleting todo by ID:', error);
-      throw error;
+        // Rollback the transaction in case of an error
+        await client.query('ROLLBACK');
+        console.error('Error deleting todo by ID:', error);
+        throw error;
     }
-  }
+}
 
 // Remove a todo list by its ID
 export async function removeTodolist(id: number) {
@@ -187,9 +188,9 @@ export async function removeTodolist(id: number) {
         // Delete the associated records in the linkedin table and get the todo_id
         const deleteLinkedinQuery = `DELETE FROM linkedin WHERE list_id = $1 RETURNING todo_id`;
         const linkedinDelRes = await client.query(deleteLinkedinQuery, [id]);
-        
+
         const todoIds = linkedinDelRes.rows.map(row => row.todo_id);
-    
+
         // Delete todos linked with the todo list from todo table
         const todoQuery = `DELETE FROM todo WHERE id = ANY($1) RETURNING *`;
         const todoValues = [todoIds];
@@ -209,35 +210,59 @@ export async function removeTodolist(id: number) {
 // Put operation
 
 // Update a todo by its ID with new data, optionally updating the linked list ID
-export async function updateTodoById(id: number, updatedTodo: TodoUpdate, listId: number){
+export async function updateTodoById(id: number, updatedTodo: TodoUpdate, listId: number) {
 
     try {
         const existingTodo = (await getTodoById(id)).rows;
 
         if (!existingTodo || existingTodo.length === 0) {
             throw new Error("Todo not found") // Todo not found
-        }else {
+        } else {
             const updatedData = {
                 todo: updatedTodo.todo || existingTodo[0].todo,
-                time: updatedTodo.time || existingTodo[0].time
+                time: updatedTodo.time || existingTodo[0].time,
+                isDone: updatedTodo.isDone || existingTodo[0].isDone
             };
-    
+
             // Update todo details
-            const updateTodoQuery = 'UPDATE todo SET todo = $1, time = $2 WHERE id = $3 RETURNING *';
-            const updateValues = [updatedData.todo.todo, updatedData.todo.time, id];
+            const updateTodoQuery = 'UPDATE todo SET todo = $1, time = $2, isDone = $3 WHERE id = $4 RETURNING *';
+            const updateValues = [updatedData.todo.todo, updatedData.todo.time, updatedData.isDone, id,];
             await client.query(updateTodoQuery, updateValues);
-    
+
             if (listId !== undefined) {
                 // Update list_id in linkedin table if provided
                 const updateLinkedinQuery = 'UPDATE linkedin SET list_id = $1 WHERE todo_id = $2';
                 const updateLinkedinValues = [listId, id];
                 await client.query(updateLinkedinQuery, updateLinkedinValues);
             }
-    
+
             return true;
         }
-    }catch (error) {
+    } catch (error) {
         console.error('Error updating todo:', error);
-        throw(error)
-    }    
+        throw (error)
+    }
+}
+
+// Update a todo by its ID with new data
+export async function updateTodoIsDoneId(id: number, isDone: boolean) {
+
+    try {
+        const existingTodo = (await getTodoById(id)).rows;
+
+        if (!existingTodo || existingTodo.length === 0) {
+            throw new Error("Todo not found") // Todo not found
+        } else {
+
+            // Update todo details
+            const updateTodoQuery = 'UPDATE todo SET isDone = $1 WHERE id = $2 RETURNING *';
+            const updateValues = [isDone, id];
+            await client.query(updateTodoQuery, updateValues);
+
+            return true;
+        }
+    } catch (error) {
+        console.error('Error updating todo:', error);
+        throw (error)
+    }
 }

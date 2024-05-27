@@ -9,15 +9,16 @@
     box-shadow: 5px 0px 10px rgba(0, 0, 0, 1);
 }
 
-button{
+button {
     border-radius: 20%;
     background-color: #EEEEEE;
     padding-top: 10px;
     padding-bottom: 10px;
     width: 100px;
+    margin: 10px;
 }
 
-button:hover{
+button:hover {
     background-color: #222831;
     color: #EEEEEE;
 }
